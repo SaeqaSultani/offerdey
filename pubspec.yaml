@@ -1,0 +1,55 @@
+name: dawahazir_rider
+description: Dawa Hazir Rider App.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  dartz: ^0.10.0
+  dio: ^4.0.0
+  dotted_border: ^2.0.0+1
+  email_validator: ^2.0.1
+  equatable: ^2.0.3
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^7.3.0
+  flutter_image_compress: ^1.1.0
+  flutter_local_notifications: ^8.2.0
+  flutter_native_timezone: ^2.0.0
+  flutter_screenutil: ^5.0.0+2
+  flutter_spinkit: ^5.1.0
+  flutter_svg: ^0.22.0
+  google_fonts: ^2.1.0
+  hydrated_bloc: ^7.1.0
+  image_picker: ^0.8.4+2
+  lottie: ^1.2.0
+  path_provider: ^2.0.5
+  permission_handler: ^8.1.6
+  rxdart: ^0.27.2
+  sqflite: ^2.0.0+4
+
+dev_dependencies:
+  flutter_lints: ^1.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - asset/images/auth/lottie_json/
+    - asset/images/auth/svg/
+    - asset/images/core/png/
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700

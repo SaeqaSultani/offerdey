@@ -1,0 +1,10 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_single_quotes: true
+    prefer_relative_imports: true
+    use_key_in_widget_constructors: false
+    constant_identifier_names: false
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options
