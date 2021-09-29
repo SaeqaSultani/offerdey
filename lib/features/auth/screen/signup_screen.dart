@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../core/network/params.dart';
 import '../../../core/util/bloc/auth/auth_bloc.dart';
 import '../../../core/util/bloc/profile_pic/profilepic_bloc.dart';
 import '../../../core/util/constants.dart';
@@ -54,11 +53,21 @@ class _SignupListener extends StatelessWidget {
           );
         }
 
-        if (state is AuthRegisteredSuccess) {
+        if (state is AuthRegisteredSuccess || state is AuthDocumentSubmitted) {
           Navigator.of(context).pop();
 
           context.read<DetailBloc>().add(const ToNextPage());
         } else if (state is NoAuth) {
+          Navigator.of(context).pop();
+
+          if (state.failure != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.failure!.message),
+              ),
+            );
+          }
+        } else if (state is UploadFailed) {
           Navigator.of(context).pop();
 
           if (state.failure != null) {
@@ -127,6 +136,11 @@ class _Scaffold extends StatelessWidget {
                       ),
                       BlocConsumer<DetailBloc, DetailState>(
                         listener: (context, state) {
+                          if (state is InfoDetailCompleted) {
+                            context
+                                .read<ProfilePicBloc>()
+                                .add(ResetProfilePic());
+                          }
                           if (state is AllDetailCompleted) {
                             context
                                 .read<AuthBloc>()
@@ -243,14 +257,27 @@ class _BasicDetailState extends State<_BasicDetail> {
             icon: 'asset/images/auth/svg/phone.svg',
             isNumber: true,
             onSubmitted: (_) {
-              context.read<DetailBloc>().add(
-                    SetBasicDetail(
-                      email: emailController.text,
-                      password: passwordController.text,
-                      name: nameController.text,
-                      phoneNumber: phoneController.text,
+              if (emailController.text.trim() == '' ||
+                  passwordController.text.trim() == '' ||
+                  nameController.text == '' ||
+                  phoneController.text.trim() == '') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Email, Password, Name or Phone Number cannot be empty',
                     ),
-                  );
+                  ),
+                );
+              } else {
+                context.read<DetailBloc>().add(
+                      SetBasicDetail(
+                        email: emailController.text,
+                        password: passwordController.text,
+                        name: nameController.text,
+                        phoneNumber: phoneController.text,
+                      ),
+                    );
+              }
             }),
         SizedBox(
           height: 8.h,
@@ -261,14 +288,27 @@ class _BasicDetailState extends State<_BasicDetail> {
         ),
         ElevatedButton(
           onPressed: () {
-            context.read<DetailBloc>().add(
-                  SetBasicDetail(
-                    email: emailController.text,
-                    password: passwordController.text,
-                    name: nameController.text,
-                    phoneNumber: phoneController.text,
+            if (emailController.text.trim() == '' ||
+                passwordController.text.trim() == '' ||
+                nameController.text == '' ||
+                phoneController.text.trim() == '') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Email, Password, Name or Phone Number cannot be empty',
                   ),
-                );
+                ),
+              );
+            } else {
+              context.read<DetailBloc>().add(
+                    SetBasicDetail(
+                      email: emailController.text,
+                      password: passwordController.text,
+                      name: nameController.text,
+                      phoneNumber: phoneController.text,
+                    ),
+                  );
+            }
           },
           child: const Text(
             'Next',
@@ -393,14 +433,27 @@ class _RiderDetailState extends State<_RiderDetail> {
           icon: 'asset/images/auth/svg/refer_by.svg',
           textInputAction: TextInputAction.done,
           onSubmitted: (_) {
-            context.read<DetailBloc>().add(
-                  SetVehicleDetail(
-                    vehicleNumber: vehicleNumberController.text,
-                    vehicleColor: vehicleColorController.text,
-                    referBy: referByController.text,
-                    vehicleModel: vehicleModelController.text,
+            if (vehicleNumberController.text.trim() == '' ||
+                vehicleColorController.text.trim() == '' ||
+                referByController.text == '' ||
+                vehicleModelController.text.trim() == '') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Email, Password, Name or Phone Number cannot be empty',
                   ),
-                );
+                ),
+              );
+            } else {
+              context.read<DetailBloc>().add(
+                    SetVehicleDetail(
+                      vehicleNumber: vehicleNumberController.text,
+                      vehicleColor: vehicleColorController.text,
+                      referBy: referByController.text,
+                      vehicleModel: vehicleModelController.text,
+                    ),
+                  );
+            }
           },
         ),
         SizedBox(
@@ -431,15 +484,27 @@ class _RiderDetailState extends State<_RiderDetail> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  // context.read<DetailBloc>().add(
-                  //       SetVehicleDetail(
-                  //         vehicleNumber: vehicleNumberController.text,
-                  //         vehicleColor: vehicleColorController.text,
-                  //         referBy: referByController.text,
-                  //         vehicleModel: vehicleModelController.text,
-                  //       ),
-                  //     );
-                  context.read<DetailBloc>().add(const ToNextPage());
+                  if (vehicleNumberController.text.trim() == '' ||
+                      vehicleColorController.text.trim() == '' ||
+                      referByController.text == '' ||
+                      vehicleModelController.text.trim() == '') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Vehicle Number, Vehicle Color, Vehicle Model or Refer By cannot be empty',
+                        ),
+                      ),
+                    );
+                  } else {
+                    context.read<DetailBloc>().add(
+                          SetVehicleDetail(
+                            vehicleNumber: vehicleNumberController.text,
+                            vehicleColor: vehicleColorController.text,
+                            referBy: referByController.text,
+                            vehicleModel: vehicleModelController.text,
+                          ),
+                        );
+                  }
                 },
                 child: const Text(
                   'Next',
@@ -484,13 +549,50 @@ class _ProfilePicDetail extends StatelessWidget {
         SizedBox(
           height: 24.h,
         ),
-        ElevatedButton(
-          onPressed: () {
-            context.read<DetailBloc>().add(const ToNextPage());
-          },
-          child: const Text(
-            'Set Profile Picture',
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).colorScheme.secondary)),
+                onPressed: () {
+                  context.read<DetailBloc>().add(const BackPreviousPage());
+                },
+                child: const Text(
+                  'Previous',
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 8.w,
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (context.read<ProfilePicBloc>().state.profilePictureUrl !=
+                      null) {
+                    context.read<DetailBloc>().add(SetProfilePicDetail(
+                        profilePicPath: context
+                            .read<ProfilePicBloc>()
+                            .state
+                            .profilePictureUrl!));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please provide a profile picture',
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: const Text(
+                  'Register',
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(
           height: 24.h,
@@ -543,13 +645,33 @@ class _DocsColumn extends StatelessWidget {
         BlocBuilder<DocumentBloc, DocumentState>(
           builder: (context, state) {
             return DocumentPlaceholder(
+              title: 'Deposit Slip',
+              onTap: () async {
+                await _imagePickerController.pickDepositSlip(context: context);
+              },
+              image: state.params.depositAmountSlipPath != ''
+                  ? Image.memory(
+                      File(state.params.depositAmountSlipPath)
+                          .readAsBytesSync(),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            );
+          },
+        ),
+        SizedBox(
+          height: 16.h,
+        ),
+        BlocBuilder<DocumentBloc, DocumentState>(
+          builder: (context, state) {
+            return DocumentPlaceholder(
               title: 'Driving Licence Front',
               onTap: () async {
                 await _imagePickerController.pickLicenceFront(context: context);
               },
-              image: state.licenceFrontPath != ''
+              image: state.params.licenceFrontPath != ''
                   ? Image.memory(
-                      File(state.licenceFrontPath).readAsBytesSync(),
+                      File(state.params.licenceFrontPath).readAsBytesSync(),
                       fit: BoxFit.cover,
                     )
                   : null,
@@ -566,9 +688,9 @@ class _DocsColumn extends StatelessWidget {
               onTap: () async {
                 await _imagePickerController.pickLicenceBack(context: context);
               },
-              image: state.licenceBackPath != ''
+              image: state.params.licenceBackPath != ''
                   ? Image.memory(
-                      File(state.licenceBackPath).readAsBytesSync(),
+                      File(state.params.licenceBackPath).readAsBytesSync(),
                       fit: BoxFit.cover,
                     )
                   : null,
@@ -585,9 +707,9 @@ class _DocsColumn extends StatelessWidget {
               onTap: () async {
                 await _imagePickerController.pickCnicFront(context: context);
               },
-              image: state.cnicFrontPath != ''
+              image: state.params.cnicFrontPath != ''
                   ? Image.memory(
-                      File(state.cnicFrontPath).readAsBytesSync(),
+                      File(state.params.cnicFrontPath).readAsBytesSync(),
                       fit: BoxFit.cover,
                     )
                   : null,
@@ -604,9 +726,9 @@ class _DocsColumn extends StatelessWidget {
               onTap: () async {
                 await _imagePickerController.pickCnicBack(context: context);
               },
-              image: state.cnicBackPath != ''
+              image: state.params.cnicBackPath != ''
                   ? Image.memory(
-                      File(state.cnicBackPath).readAsBytesSync(),
+                      File(state.params.cnicBackPath).readAsBytesSync(),
                       fit: BoxFit.cover,
                     )
                   : null,
@@ -616,56 +738,15 @@ class _DocsColumn extends StatelessWidget {
         SizedBox(
           height: 24.h,
         ),
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).colorScheme.secondary)),
-                onPressed: () {
-                  context.read<DetailBloc>().add(const BackPreviousPage());
-                },
-                child: const Text(
-                  'Previous',
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 8.w,
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  // context.read<AuthBloc>().add(
-                  //       UploadDocuments(
-                  //         DocumentParam(
-                  //           vendorId:
-                  //               context.read<AuthBloc>().state.auth.vendorId,
-                  //           profilePicPath: context
-                  //               .read<ProfilePicBloc>()
-                  //               .state
-                  //               .profilePictureUrl!,
-                  //           licenceFrontPath: context
-                  //               .read<DocumentBloc>()
-                  //               .state
-                  //               .licenceFrontPath,
-                  //           licenceBackPath: context.read().state.licenceBackPath,
-                  //           cnicBackPath:
-                  //               context.read<DocumentBloc>().state.cnicBackPath,
-                  //           cnicFrontPath:
-                  //               context.read<DocumentBloc>().state.cnicFrontPath,
-                  //         ),
-                  //       ),
-                  //     );
-                  context.read<DetailBloc>().add(const ToNextPage());
-                },
-                child: const Text(
-                  'Submit',
-                ),
-              ),
-            ),
-          ],
+        ElevatedButton(
+          onPressed: () {
+            context.read<AuthBloc>().add(
+                  UploadDocuments(context.read<DocumentBloc>().state.params),
+                );
+          },
+          child: const Text(
+            'Submit',
+          ),
         ),
         SizedBox(
           height: 24.h,

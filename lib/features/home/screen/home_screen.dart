@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                     if (state is AuthLoaded)
                       Column(
                         children: [
-                          Text(state.auth.vendorId.toString()),
+                          Text(state.auth.riderId.toString()),
                         ],
                       )
                   ],

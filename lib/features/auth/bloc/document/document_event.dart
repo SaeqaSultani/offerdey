@@ -30,3 +30,10 @@ class SetCnicBack extends DocumentEvent {
 
   const SetCnicBack(this.cnicBackPath);
 }
+
+class SetDepositSlip extends DocumentEvent {
+  final int riderId;
+  final String depositAmountSlipPath;
+
+  const SetDepositSlip(this.riderId, this.depositAmountSlipPath);
+}

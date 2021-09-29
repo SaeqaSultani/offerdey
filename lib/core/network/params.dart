@@ -7,9 +7,10 @@ class RegisterParam extends Equatable {
   final String? vehicleNumber;
   final String? vehicleColor;
   final String? vehicleModel;
-
   final String? contactNumber;
   final String? referBy;
+  final String? regStatus;
+  final String? profilePicPath;
 
   const RegisterParam({
     this.name,
@@ -20,6 +21,8 @@ class RegisterParam extends Equatable {
     this.vehicleModel,
     this.referBy,
     this.contactNumber,
+    this.regStatus = 'email',
+    this.profilePicPath,
   });
 
   @override
@@ -31,6 +34,8 @@ class RegisterParam extends Equatable {
         vehicleColor,
         vehicleModel,
         referBy,
+        profilePicPath,
+        regStatus,
         contactNumber,
       ];
 }
@@ -53,20 +58,30 @@ class ForgotPasswordParam {
   });
 }
 
-class DocumentParam {
-  final int vendorId;
-  final String profilePicPath;
+class DocumentParam extends Equatable {
+  final int riderId;
+  final String depositAmountSlipPath;
   final String licenceFrontPath;
   final String licenceBackPath;
   final String cnicFrontPath;
   final String cnicBackPath;
 
-  DocumentParam({
-    required this.vendorId,
-    required this.profilePicPath,
+  const DocumentParam({
+    required this.riderId,
+    required this.depositAmountSlipPath,
     required this.licenceFrontPath,
     required this.licenceBackPath,
     required this.cnicFrontPath,
     required this.cnicBackPath,
   });
+
+  @override
+  List<Object?> get props => [
+        riderId,
+        depositAmountSlipPath,
+        licenceFrontPath,
+        licenceBackPath,
+        cnicFrontPath,
+        cnicBackPath,
+      ];
 }

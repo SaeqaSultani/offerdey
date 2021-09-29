@@ -15,69 +15,81 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
 
   AuthBloc() : super(const AuthInitial()) {
     on<SignupWithEmail>((event, emit) async {
-      emit(const AuthLoading());
+      emit(AuthLoading(state.auth));
 
       final Either<Failure, Auth> result =
           await _controller.signupWithEmail(event.params);
 
       result.fold(
-        (l) => emit(NoAuth(failure: l)),
-        (r) => emit(
-          AuthRegisteredSuccess(
-            Auth(
-              method: r.method,
-              vendorId: r.vendorId,
-            ),
+        (l) => emit(
+          NoAuth(
+            failure: l,
+            auth: state.auth,
           ),
+        ),
+        (r) => emit(
+          AuthRegisteredSuccess(r),
         ),
       );
     });
 
     on<UploadDocuments>((event, emit) async {
-      emit(const AuthLoading());
+      emit(AuthLoading(state.auth));
 
       final Either<Failure, Auth> result =
           await _controller.uploadDocuments(event.params);
 
       result.fold(
-        (l) => emit(NoAuth(failure: l)),
+        (l) => emit(
+          UploadFailed(
+            failure: l,
+            auth: state.auth,
+          ),
+        ),
         (r) => emit(
-          AuthAccountVerified(
+          AuthDocumentSubmitted(
             Auth(
               method: r.method,
-              vendorId: r.vendorId,
+              riderId: r.riderId,
+              token: r.token,
+              documentSubmitted: r.documentSubmitted,
             ),
           ),
         ),
       );
     });
-    // on<LoginWithEmail>((event, emit) async {
-    //   emit(const AuthLoading());
+    on<LoginWithEmail>((event, emit) async {
+      emit(AuthLoading(state.auth));
 
-    //   final Either<Failure, Auth> result =
-    //       await _controller.loginWithEmail(event.params);
+      final Either<Failure, Auth> result =
+          await _controller.loginWithEmail(event.params, state.auth);
 
-    //   result.fold(
-    //     (l) => emit(NoAuth(failure: l)),
-    //     (r) => emit(
-    //       AuthLoaded(
-    //         Auth(
-    //           method: r.method,
-    //           token: r.token,
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // });
+      result.fold(
+        (l) => emit(
+          NoAuth(
+            failure: l,
+            auth: state.auth,
+          ),
+        ),
+        (r) => emit(
+          AuthLoaded(r),
+        ),
+      );
+    });
 
     on<ForgetPassword>((event, emit) async {
-      emit(const AuthLoading());
+      emit(AuthLoading(state.auth));
 
       final Either<Failure, String> result =
           await _controller.forgetPassword(event.params);
 
       result.fold(
-        (l) => emit(NoAuth(failure: l)),
+        (l) => emit(
+          NoAuth(
+            failure: l,
+            auth: state.auth,
+          ),
+        ),
         (r) => emit(
           const AuthInitial(),
         ),
@@ -88,11 +100,22 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   @override
   AuthState? fromJson(Map<String, dynamic> json) {
     try {
-      if (json['vendorId'] as int != -1) {
+      if (json['token'] != '') {
         return AuthLoaded(
           Auth(
-            vendorId: json['vendorId'],
+            riderId: json['riderId'],
             method: LoginMethod.values[json['loginMethod'] as int],
+            token: json['token'],
+            documentSubmitted: json['documentSubmitted'] as bool,
+          ),
+        );
+      } else if (!json['documentSubmitted'] && json['vendorId'] as int != -1) {
+        return AuthRegisteredSuccess(
+          Auth(
+            riderId: json['riderId'],
+            method: LoginMethod.values[json['loginMethod'] as int],
+            token: json['token'],
+            documentSubmitted: json['documentSubmitted'] as bool,
           ),
         );
       } else {
@@ -107,8 +130,10 @@ class AuthBloc extends HydratedBloc<AuthEvent, AuthState> {
   Map<String, dynamic>? toJson(AuthState state) {
     try {
       return {
-        'vendorId': state.auth.vendorId,
-        'loginMethod': state.auth.method.index
+        'riderId': state.auth.riderId,
+        'loginMethod': state.auth.method.index,
+        'token': state.auth.token,
+        'documentSubmitted': state.auth.documentSubmitted,
       };
     } catch (e) {
       return null;

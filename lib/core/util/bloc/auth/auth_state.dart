@@ -13,20 +13,16 @@ class AuthInitial extends AuthState {
   const AuthInitial()
       : super(
           const Auth(
-            vendorId: -1,
+            riderId: -1,
             method: LoginMethod.none,
+            token: '',
+            documentSubmitted: false,
           ),
         );
 }
 
 class AuthLoading extends AuthState {
-  const AuthLoading()
-      : super(
-          const Auth(
-            vendorId: -1,
-            method: LoginMethod.none,
-          ),
-        );
+  const AuthLoading(Auth auth) : super(auth);
 }
 
 class AuthRegisteredSuccess extends AuthState {
@@ -39,15 +35,14 @@ class AuthLoaded extends AuthState {
 
 class NoAuth extends AuthState {
   final Failure? failure;
-  const NoAuth({this.failure})
-      : super(
-          const Auth(
-            vendorId: -1,
-            method: LoginMethod.none,
-          ),
-        );
+  const NoAuth({this.failure, required Auth auth}) : super(auth);
 }
 
-class AuthAccountVerified extends AuthState {
-  const AuthAccountVerified(Auth auth) : super(auth);
+class AuthDocumentSubmitted extends AuthState {
+  const AuthDocumentSubmitted(Auth auth) : super(auth);
+}
+
+class UploadFailed extends AuthState {
+  final Failure? failure;
+  const UploadFailed({this.failure, required Auth auth}) : super(auth);
 }

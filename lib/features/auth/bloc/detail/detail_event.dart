@@ -40,6 +40,11 @@ class SetVehicleDetail extends DetailEvent {
         );
 }
 
+class SetProfilePicDetail extends DetailEvent {
+  SetProfilePicDetail({required String profilePicPath})
+      : super(RegisterParam(profilePicPath: profilePicPath));
+}
+
 class BackPreviousPage extends DetailEvent {
   const BackPreviousPage() : super(const RegisterParam());
 }

@@ -1,19 +1,18 @@
-import 'package:dawahazir_rider/features/auth/widget/password_field.dart';
-
-import '../../../core/network/params.dart';
-import '../../../core/util/bloc/auth/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../core/network/params.dart';
+import '../../../core/util/bloc/auth/auth_bloc.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/controller/auth_controller.dart';
 import '../../../routes/routes.dart';
 import '../widget/auth_text_field.dart';
+import '../widget/password_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen();
@@ -45,9 +44,21 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state is AuthLoading) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => SpinKitRotatingCircle(
+              color: Colors.white,
+              size: 48.sp,
+            ),
+          );
+        }
         if (state is AuthLoaded) {
+          Navigator.of(context).pop();
           Navigator.of(context).pushReplacementNamed(RouteGenerator.home);
         } else if (state is NoAuth) {
+          Navigator.of(context).pop();
           if (state.failure != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

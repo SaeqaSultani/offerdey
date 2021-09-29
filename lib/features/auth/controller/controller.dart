@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dawahazir_rider/core/util/bloc/auth/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -61,42 +62,42 @@ class ImagePickerController {
   }
 
   Future<void> pickLicenceFront({required BuildContext context}) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print('licence');
-    print(image);
+    try {
+      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
-    if (image != null) {
-      final Directory dir = await getApplicationDocumentsDirectory();
+      if (image != null) {
+        final Directory dir = await getApplicationDocumentsDirectory();
 
-      final File newImage =
-          await File(image.path).copy('${dir.path}/licenceFront.jpg');
+        final File newImage =
+            await File(image.path).copy('${dir.path}/licenceFront.jpg');
 
-      final int imageBytesLength = newImage.readAsBytesSync().lengthInBytes;
+        final int imageBytesLength = newImage.readAsBytesSync().lengthInBytes;
 
-      File? compressedImage;
+        File? compressedImage;
 
-      if (imageBytesLength > 1900000) {
-        compressedImage =
-            await _compressImage(newImage, 'licenceFrontCompressed');
+        if (imageBytesLength > 1900000) {
+          compressedImage =
+              await _compressImage(newImage, 'licenceFrontCompressed');
+        }
+
+        BlocProvider.of<DocumentBloc>(context).add(
+          SetLicenceFront(
+              compressedImage != null ? compressedImage.path : newImage.path),
+        );
       }
-
-      BlocProvider.of<DocumentBloc>(context).add(
-        SetLicenceFront(
-            compressedImage != null ? compressedImage.path : newImage.path),
-      );
+    } catch (e) {
+      print(e);
     }
   }
 
   Future<void> pickLicenceBack({required BuildContext context}) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print('licence');
-    print(image);
 
     if (image != null) {
       final Directory dir = await getApplicationDocumentsDirectory();
 
       final File newImage =
-          await File(image.path).copy('${dir.path}/storeLicence.jpg');
+          await File(image.path).copy('${dir.path}/licenceBack.jpg');
 
       final int imageBytesLength = newImage.readAsBytesSync().lengthInBytes;
 
@@ -116,8 +117,7 @@ class ImagePickerController {
 
   Future<void> pickCnicFront({required BuildContext context}) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print('cnic front');
-    print(image);
+
     if (image != null) {
       final Directory dir = await getApplicationDocumentsDirectory();
 
@@ -129,8 +129,7 @@ class ImagePickerController {
       File? compressedImage;
 
       if (imageBytesLength > 1900000) {
-        compressedImage =
-            await _compressImage(newImage, 'licenceFrontCompressed');
+        compressedImage = await _compressImage(newImage, 'cnicFrontCompressed');
       }
 
       BlocProvider.of<DocumentBloc>(context).add(
@@ -142,8 +141,7 @@ class ImagePickerController {
 
   Future<void> pickCnicBack({required BuildContext context}) async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-    print('cnic back');
-    print(image);
+
     if (image != null) {
       final Directory dir = await getApplicationDocumentsDirectory();
 
@@ -155,12 +153,36 @@ class ImagePickerController {
       File? compressedImage;
 
       if (imageBytesLength > 1900000) {
-        compressedImage =
-            await _compressImage(newImage, 'licenceFrontCompressed');
+        compressedImage = await _compressImage(newImage, 'cnicBackCompressed');
       }
 
       BlocProvider.of<DocumentBloc>(context).add(
         SetCnicBack(
+            compressedImage != null ? compressedImage.path : newImage.path),
+      );
+    }
+  }
+
+  Future<void> pickDepositSlip({required BuildContext context}) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+
+    if (image != null) {
+      final Directory dir = await getApplicationDocumentsDirectory();
+
+      final File newImage =
+          await File(image.path).copy('${dir.path}/depositSlip.jpg');
+
+      final int imageBytesLength = newImage.readAsBytesSync().lengthInBytes;
+
+      File? compressedImage;
+
+      if (imageBytesLength > 1900000) {
+        compressedImage =
+            await _compressImage(newImage, 'depositSlipCompressed');
+      }
+
+      BlocProvider.of<DocumentBloc>(context).add(
+        SetDepositSlip(context.read<AuthBloc>().state.auth.riderId,
             compressedImage != null ? compressedImage.path : newImage.path),
       );
     }

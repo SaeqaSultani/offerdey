@@ -20,44 +20,49 @@ class AuthController {
   }
   AuthController._internal();
 
-  // Future<Either<Failure, Auth>> loginWithEmail(LoginParam params) async {
-  //   try {
-  //     final Response<dynamic> loginResponse = await _apiService.loginVendor(
-  //         LoginParam(email: params.email, password: params.password));
+  Future<Either<Failure, Auth>> loginWithEmail(
+      LoginParam params, Auth auth) async {
+    try {
+      final Response<dynamic> loginResponse = await _apiService.loginRider(
+          LoginParam(email: params.email, password: params.password));
 
-  //     if (loginResponse.statusCode == 200) {
-  //       return Right(
-  //         Auth(
-  //           token: loginResponse.data['success']['token'],
-  //           method: LoginMethod.email,
-  //         ),
-  //       );
-  //     } else {
-  //       return Left(AuthFailure(loginResponse.data.toString()));
-  //     }
-  //   } on RemoteException catch (e) {
-  //     return Left(RemoteFailure(
-  //         message: e.dioError.response!.data['error'].toString(),
-  //         errorType: e.dioError.type));
-  //   } catch (e) {
-  //     return Left(AuthFailure(e.toString()));
-  //   }
-  // }
+      if (loginResponse.statusCode == 200) {
+        return Right(
+          Auth(
+            riderId: auth.riderId,
+            token: loginResponse.data['success']['token'],
+            method: auth.method,
+            documentSubmitted: auth.documentSubmitted,
+          ),
+        );
+      } else {
+        return Left(AuthFailure(loginResponse.data.toString()));
+      }
+    } on RemoteException catch (e) {
+      return Left(RemoteFailure(
+          message: e.dioError.response!.data['error'].toString(),
+          errorType: e.dioError.type));
+    } catch (e) {
+      return Left(AuthFailure(e.toString()));
+    }
+  }
 
   Future<Either<Failure, Auth>> signupWithEmail(RegisterParam params) async {
     try {
       final Response<dynamic> response =
-          await _apiService.registerVendor(params);
+          await _apiService.registerRider(params);
 
       if (response.statusCode == 200) {
         return Right(
           Auth(
-            vendorId: response.data['success']['vendor_id'],
+            riderId: response.data['success']['rider_id'],
             method: LoginMethod.email,
+            token: '',
+            documentSubmitted: false,
           ),
         );
       } else {
-        return Left(AuthFailure(response.data));
+        return Left(AuthFailure(response.data.toString()));
       }
     } on RemoteException catch (e) {
       return Left(RemoteFailure(
@@ -74,15 +79,16 @@ class AuthController {
           await _apiService.uploadDocuments(params);
 
       if (response.statusCode == 200) {
-        print(response);
         return Right(
           Auth(
-            vendorId: 12,
+            riderId: params.riderId,
             method: LoginMethod.email,
+            token: '',
+            documentSubmitted: true,
           ),
         );
       } else {
-        return Left(AuthFailure(response.data));
+        return Left(AuthFailure(response.data.toString()));
       }
     } on RemoteException catch (e) {
       return Left(RemoteFailure(

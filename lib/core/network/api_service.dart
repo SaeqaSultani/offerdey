@@ -8,8 +8,8 @@ class ApiService {
 
   ApiService({required this.networkClient});
 
-  Future<Response> registerVendor(RegisterParam params) async {
-    final Map<String, Object> paramsInMap = {
+  Future<Response> registerRider(RegisterParam params) async {
+    final FormData formData = FormData.fromMap({
       'name': params.name ?? '',
       'email': params.email ?? '',
       'password': params.password ?? '',
@@ -17,13 +17,15 @@ class ApiService {
       'vehicle_number': params.vehicleNumber ?? '',
       'vehicle_color': params.vehicleColor ?? '',
       'vehicle_model': params.vehicleModel ?? '',
-      'refer_by': params.referBy ?? ''
-    };
+      'refer_by': params.referBy ?? '',
+      'reg_status': params.regStatus,
+      'profile_pic': await MultipartFile.fromFile(params.profilePicPath!),
+    });
 
-    return await networkClient.post('/rider/register', paramsInMap);
+    return await networkClient.fileUpload('/rider/register', formData);
   }
 
-  Future<Response> loginVendor(LoginParam params) async {
+  Future<Response> loginRider(LoginParam params) async {
     final Map<String, Object> paramsInMap = {
       'email': params.email,
       'password': params.password,
@@ -41,23 +43,16 @@ class ApiService {
   }
 
   Future<Response> uploadDocuments(DocumentParam params) async {
-    print(
-      params.profilePicPath,
-    );
-    print(
-      params.cnicBackPath,
-    );
-    print(params.cnicFrontPath);
-
     final FormData formData = FormData.fromMap({
-      'vendor_id': params.vendorId,
+      'rider_id': params.riderId,
+      'deposit_amount_slip':
+          await MultipartFile.fromFile(params.depositAmountSlipPath),
       'license_front': await MultipartFile.fromFile(params.licenceFrontPath),
       'license_back': await MultipartFile.fromFile(params.licenceBackPath),
       'cnic_front': await MultipartFile.fromFile(params.cnicFrontPath),
       'cnic_back': await MultipartFile.fromFile(params.cnicBackPath),
-      'vendor_picture': await MultipartFile.fromFile(params.profilePicPath),
     });
 
-    return await networkClient.fileUpload('/vendor/upload-documents', formData);
+    return await networkClient.fileUpload('/rider/upload-documents', formData);
   }
 }

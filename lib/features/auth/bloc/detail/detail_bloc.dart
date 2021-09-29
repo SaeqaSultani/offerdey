@@ -36,7 +36,7 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
 
     on<SetVehicleDetail>((event, emit) {
       emit(
-        DetailState(
+        InfoDetailCompleted(
           RegisterParam(
             email: state.params.email,
             password: state.params.password,
@@ -46,6 +46,25 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
             vehicleColor: event.params.vehicleColor,
             vehicleModel: event.params.vehicleModel,
             referBy: event.params.referBy,
+          ),
+          2,
+        ),
+      );
+    });
+
+    on<SetProfilePicDetail>((event, emit) {
+      emit(
+        AllDetailCompleted(
+          RegisterParam(
+            email: state.params.email,
+            password: state.params.password,
+            name: state.params.name,
+            contactNumber: state.params.contactNumber,
+            vehicleNumber: state.params.vehicleNumber,
+            vehicleColor: state.params.vehicleColor,
+            vehicleModel: state.params.vehicleModel,
+            referBy: state.params.referBy,
+            profilePicPath: event.params.profilePicPath,
           ),
           2,
         ),
