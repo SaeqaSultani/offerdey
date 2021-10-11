@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: SizedBox(
           child: Image.asset(
             'asset/images/core/png/dawa_hazir_logo.png',
-            width: 0.7.sw,
+            width: 0.5.sw,
           ),
         ),
       ),

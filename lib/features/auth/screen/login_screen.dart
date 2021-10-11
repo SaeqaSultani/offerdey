@@ -81,8 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 0.3.sh,
                   child: Center(
-                    child: LottieBuilder.asset(
-                      'asset/images/auth/lottie_json/login_animation.json',
+                    child: Image.asset(
+                      'asset/images/core/png/dawa_hazir_logo.png',
+                      width: 0.5.sw,
                     ),
                   ),
                 ),
@@ -108,8 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           AuthTextField(
                             controller: emailController,
-                            hintText: 'Email Address',
-                            icon: 'asset/images/auth/svg/email.svg',
+                            hintText: 'Phone No',
+                            icon: 'asset/images/auth/svg/phone.svg',
                             keyboardType: TextInputType.emailAddress,
                           ),
                           SizedBox(

@@ -64,8 +64,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 SizedBox(
                   height: 0.3.sh,
                   child: Center(
-                    child: LottieBuilder.asset(
-                      'asset/images/auth/lottie_json/login_animation.json',
+                    child: Image.asset(
+                      'asset/images/core/png/dawa_hazir_logo.png',
+                      width: 0.5.sw,
                     ),
                   ),
                 ),

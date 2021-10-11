@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dawahazir_rider/features/auth/widget/pin_row.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -103,8 +104,9 @@ class _Scaffold extends StatelessWidget {
             SizedBox(
               height: 0.3.sh,
               child: Center(
-                child: LottieBuilder.asset(
-                  'asset/images/auth/lottie_json/login_animation.json',
+                child: Image.asset(
+                  'asset/images/core/png/dawa_hazir_logo.png',
+                  width: 0.5.sw,
                 ),
               ),
             ),
@@ -116,7 +118,7 @@ class _Scaffold extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        height: 24.h,
+                        height: 10.h,
                       ),
                       Text(
                         'Sign Up',
@@ -128,7 +130,7 @@ class _Scaffold extends StatelessWidget {
                       ),
                       BlocBuilder<DetailBloc, DetailState>(
                         builder: (context, state) {
-                          return Steps(state.detailIndex, 4);
+                          return Steps(state.detailIndex, 3);
                         },
                       ),
                       SizedBox(
@@ -155,9 +157,9 @@ class _Scaffold extends StatelessWidget {
                               return const _RiderDetail();
                             case 2:
                               return const _ProfilePicDetail();
+                            // case 3:
+                            //   return const _SupportDocsDetail();
                             case 3:
-                              return const _SupportDocsDetail();
-                            case 4:
                               return const _AllSet();
                             default:
                               return const _BasicDetail();
@@ -184,20 +186,10 @@ class _BasicDetail extends StatefulWidget {
 }
 
 class _BasicDetailState extends State<_BasicDetail> {
-  late final TextEditingController emailController;
-  late final TextEditingController passwordController;
-  late final TextEditingController nameController;
   late final TextEditingController phoneController;
 
   @override
   void initState() {
-    emailController = TextEditingController();
-    emailController.text = context.read<DetailBloc>().state.params.email ?? '';
-    passwordController = TextEditingController();
-    passwordController.text =
-        context.read<DetailBloc>().state.params.password ?? '';
-    nameController = TextEditingController();
-    nameController.text = context.read<DetailBloc>().state.params.name ?? '';
     phoneController = TextEditingController();
     phoneController.text =
         context.read<DetailBloc>().state.params.contactNumber ?? '';
@@ -207,9 +199,6 @@ class _BasicDetailState extends State<_BasicDetail> {
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nameController.dispose();
     phoneController.dispose();
 
     super.dispose();
@@ -220,36 +209,17 @@ class _BasicDetailState extends State<_BasicDetail> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(
+          height: 20.h,
+        ),
         Text(
-          'Basic Details',
+          'Enter your phone number to continue',
           style: Theme.of(context).textTheme.headline6!.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
-        AuthTextField(
-          controller: emailController,
-          hintText: 'Email Address',
-          icon: 'asset/images/auth/svg/email.svg',
-          keyboardType: TextInputType.emailAddress,
-        ),
         SizedBox(
-          height: 16.h,
-        ),
-        PasswordField(
-          controller: passwordController,
-          hintText: 'Password',
-          icon: 'asset/images/auth/svg/password.svg',
-        ),
-        SizedBox(
-          height: 16.h,
-        ),
-        AuthTextField(
-          controller: nameController,
-          hintText: 'Name',
-          icon: 'asset/images/auth/svg/name.svg',
-        ),
-        SizedBox(
-          height: 16.h,
+          height: 20.h,
         ),
         AuthTextField(
             controller: phoneController,
@@ -257,23 +227,17 @@ class _BasicDetailState extends State<_BasicDetail> {
             icon: 'asset/images/auth/svg/phone.svg',
             isNumber: true,
             onSubmitted: (_) {
-              if (emailController.text.trim() == '' ||
-                  passwordController.text.trim() == '' ||
-                  nameController.text == '' ||
-                  phoneController.text.trim() == '') {
+              if (phoneController.text.trim() == '') {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text(
-                      'Email, Password, Name or Phone Number cannot be empty',
+                      'Phone Number cannot be empty',
                     ),
                   ),
                 );
               } else {
                 context.read<DetailBloc>().add(
                       SetBasicDetail(
-                        email: emailController.text,
-                        password: passwordController.text,
-                        name: nameController.text,
                         phoneNumber: phoneController.text,
                       ),
                     );
@@ -282,29 +246,23 @@ class _BasicDetailState extends State<_BasicDetail> {
         SizedBox(
           height: 8.h,
         ),
-        const Text('* All field must not be empty.'),
+        const Text('* for example 03061234567'),
         SizedBox(
           height: 24.h,
         ),
         ElevatedButton(
           onPressed: () {
-            if (emailController.text.trim() == '' ||
-                passwordController.text.trim() == '' ||
-                nameController.text == '' ||
-                phoneController.text.trim() == '') {
+            if (phoneController.text.trim() == '') {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
-                    'Email, Password, Name or Phone Number cannot be empty',
+                    'Phone Number cannot be empty',
                   ),
                 ),
               );
             } else {
               context.read<DetailBloc>().add(
                     SetBasicDetail(
-                      email: emailController.text,
-                      password: passwordController.text,
-                      name: nameController.text,
                       phoneNumber: phoneController.text,
                     ),
                   );
@@ -330,7 +288,7 @@ class _BasicDetailState extends State<_BasicDetail> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Already have an account yet? '),
+                  const Text('Already have an account? '),
                   Text(
                     'Sign In!',
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(
@@ -359,156 +317,37 @@ class _RiderDetail extends StatefulWidget {
 }
 
 class _RiderDetailState extends State<_RiderDetail> {
-  late final TextEditingController vehicleNumberController;
-  late final TextEditingController vehicleColorController;
-  late final TextEditingController vehicleModelController;
-  late final TextEditingController referByController;
-
   @override
   void initState() {
-    vehicleNumberController = TextEditingController();
-    vehicleNumberController.text =
-        context.read<DetailBloc>().state.params.vehicleNumber ?? '';
-    vehicleColorController = TextEditingController();
-    vehicleColorController.text =
-        context.read<DetailBloc>().state.params.vehicleColor ?? '';
-    vehicleModelController = TextEditingController();
-    vehicleModelController.text =
-        context.read<DetailBloc>().state.params.vehicleModel ?? '';
-    referByController = TextEditingController();
-    referByController.text =
-        context.read<DetailBloc>().state.params.referBy ?? '';
-
     super.initState();
   }
 
   @override
   void dispose() {
-    vehicleNumberController.dispose();
-    vehicleColorController.dispose();
-    vehicleModelController.dispose();
-    referByController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Vehicle Details',
-          style: Theme.of(context).textTheme.headline6!.copyWith(
-                fontWeight: FontWeight.bold,
+          'Verify Phone Number',
+          style: Theme.of(context).textTheme.headline5!.copyWith(
+                color: Colors.white,
+                fontSize: 30.sp,
               ),
         ),
-        AuthTextField(
-          controller: vehicleNumberController,
-          hintText: 'Vehicle Number',
-          icon: 'asset/images/auth/svg/plat_num.svg',
-        ),
         SizedBox(
-          height: 16.h,
-        ),
-        AuthTextField(
-          controller: vehicleColorController,
-          hintText: 'Vehicle Color',
-          icon: 'asset/images/auth/svg/color.svg',
-        ),
-        SizedBox(
-          height: 16.h,
-        ),
-        AuthTextField(
-          controller: vehicleModelController,
-          hintText: 'Vehicle Model',
-          icon: 'asset/images/auth/svg/vehicle.svg',
-        ),
-        SizedBox(
-          height: 16.h,
-        ),
-        AuthTextField(
-          controller: referByController,
-          hintText: 'Refer By',
-          icon: 'asset/images/auth/svg/refer_by.svg',
-          textInputAction: TextInputAction.done,
-          onSubmitted: (_) {
-            if (vehicleNumberController.text.trim() == '' ||
-                vehicleColorController.text.trim() == '' ||
-                referByController.text == '' ||
-                vehicleModelController.text.trim() == '') {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Email, Password, Name or Phone Number cannot be empty',
-                  ),
-                ),
-              );
-            } else {
-              context.read<DetailBloc>().add(
-                    SetVehicleDetail(
-                      vehicleNumber: vehicleNumberController.text,
-                      vehicleColor: vehicleColorController.text,
-                      referBy: referByController.text,
-                      vehicleModel: vehicleModelController.text,
-                    ),
-                  );
-            }
-          },
-        ),
-        SizedBox(
-          height: 8.h,
-        ),
-        const Text('* All field must not be empty.'),
-        SizedBox(
-          height: 24.h,
+          height: 4.h,
         ),
         Row(
           children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).colorScheme.secondary)),
-                onPressed: () {
-                  context.read<DetailBloc>().add(const BackPreviousPage());
-                },
-                child: const Text(
-                  'Previous',
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 8.w,
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  if (vehicleNumberController.text.trim() == '' ||
-                      vehicleColorController.text.trim() == '' ||
-                      referByController.text == '' ||
-                      vehicleModelController.text.trim() == '') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Vehicle Number, Vehicle Color, Vehicle Model or Refer By cannot be empty',
-                        ),
-                      ),
-                    );
-                  } else {
-                    context.read<DetailBloc>().add(
-                          SetVehicleDetail(
-                            vehicleNumber: vehicleNumberController.text,
-                            vehicleColor: vehicleColorController.text,
-                            referBy: referByController.text,
-                            vehicleModel: vehicleModelController.text,
-                          ),
-                        );
-                  }
-                },
-                child: const Text(
-                  'Next',
-                ),
+            Text(
+              'A 6 digit TAC number is sent to the phone number ',
+              style: TextStyle(
+                height: 1.5.h,
+                color: Colors.white,
               ),
             ),
           ],
@@ -516,13 +355,77 @@ class _RiderDetailState extends State<_RiderDetail> {
         SizedBox(
           height: 24.h,
         ),
+        _SignInColumn(),
+
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       child: ElevatedButton(
+        //         style: ButtonStyle(
+        //             backgroundColor: MaterialStateProperty.all(
+        //                 Theme.of(context).colorScheme.secondary)),
+        //         onPressed: () {
+        //           context.read<DetailBloc>().add(const BackPreviousPage());
+        //         },
+        //         child: const Text(
+        //           'Previous',
+        //         ),
+        //       ),
+        //     ),
+        //     SizedBox(
+        //       width: 8.w,
+        //     ),
+        //     Expanded(
+        //       child: ElevatedButton(
+        //         onPressed: () {},
+        //         child: const Text(
+        //           'Next',
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
 }
 
-class _ProfilePicDetail extends StatelessWidget {
+class _ProfilePicDetail extends StatefulWidget {
   const _ProfilePicDetail();
+
+  @override
+  State<_ProfilePicDetail> createState() => _ProfilePicDetailState();
+}
+
+class _ProfilePicDetailState extends State<_ProfilePicDetail> {
+  late final TextEditingController phonController;
+
+  String? initialValue = 'Select City';
+
+  var itemList = [
+    'Select City',
+    'Herat',
+    'Kabul',
+    'Mazar',
+    'Kandhar'
+  ];
+
+
+
+  @override
+  void initState() {
+    phonController = TextEditingController();
+    // phonController.text =
+    //     context.read<DetailBloc>().state.params.contactNumber ?? '';
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    phonController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +434,7 @@ class _ProfilePicDetail extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Profile Details',
+              'Account Details',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -541,13 +444,75 @@ class _ProfilePicDetail extends StatelessWidget {
         SizedBox(
           height: 16.h,
         ),
+        AuthTextField(
+            controller: phonController,
+            hintText: 'Full Name',
+            icon: 'asset/images/auth/svg/name.svg',
+            isNumber: false,
+            onSubmitted: (_) {}),
         SizedBox(
-          width: 160.w,
-          height: 160.w,
-          child: const ImagePlaceHolder(),
+          height: 16.h,
+        ),
+        AuthTextField(
+            controller: phonController,
+            hintText: 'Phone Number',
+            icon: 'asset/images/auth/svg/phone.svg',
+            isNumber: true,
+            onSubmitted: (_) {}),
+        SizedBox(
+          height: 16.h,
+        ),
+        AuthTextField(
+            controller: phonController,
+            hintText: 'WhatsApp Number (Optional)',
+            icon: 'asset/images/auth/svg/phone.svg',
+            isNumber: true,
+            onSubmitted: (_) {}),
+        SizedBox(
+          height: 16.h,
+        ),
+        AuthTextField(
+            controller: phonController,
+            hintText: 'Password',
+            icon: 'asset/images/auth/svg/password.svg',
+            isNumber: false,
+            onSubmitted: (_) {}),
+        SizedBox(
+          height: 16.h,
+        ),
+        AuthTextField(
+            controller: phonController,
+            hintText: 'Confirm Password',
+            icon: 'asset/images/auth/svg/password.svg',
+            isNumber: false,
+            onSubmitted: (_) {}),
+        SizedBox(
+          height: 16.h,
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(
+            horizontal : 16.w,
+            vertical: 12.h,
+          ),
+          // for sending me the code follow these steps
+          // one to commit
+          // then push
+          child: DropdownButton(
+            isExpanded: true,
+            iconEnabledColor: Colors.blue,
+            style: Theme.of(context).textTheme.bodyText2,
+            dropdownColor: Colors.white,
+            focusColor: Colors.black,
+            value: initialValue,
+            icon: const Icon(Icons.keyboard_arrow_down),
+            items: itemList.map((String items) {
+              return DropdownMenuItem(value: items, child: Text(items));
+            }).toList(),
+            onChanged: (String? newValue) async => setState(() => initialValue = newValue),
+          ),
         ),
         SizedBox(
-          height: 24.h,
+          height: 16.h,
         ),
         Row(
           children: [
@@ -570,22 +535,23 @@ class _ProfilePicDetail extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  if (context.read<ProfilePicBloc>().state.profilePictureUrl !=
-                      null) {
-                    context.read<DetailBloc>().add(SetProfilePicDetail(
-                        profilePicPath: context
-                            .read<ProfilePicBloc>()
-                            .state
-                            .profilePictureUrl!));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Please provide a profile picture',
-                        ),
-                      ),
-                    );
-                  }
+                  context.read<DetailBloc>().add(const ToNextPage());
+                  // if (context.read<ProfilePicBloc>().state.profilePictureUrl !=
+                  //     null) {
+                  //   context.read<DetailBloc>().add(SetProfilePicDetail(
+                  //       profilePicPath: context
+                  //           .read<ProfilePicBloc>()
+                  //           .state
+                  //           .profilePictureUrl!));
+                  // } else {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       content: Text(
+                  //         'Please provide a profile picture',
+                  //       ),
+                  //     ),
+                  //   );
+                  // }
                 },
                 child: const Text(
                   'Register',
@@ -776,7 +742,7 @@ class _AllSet extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 32.w),
           child: Text(
-            'Documents submitted. Please wait for our teams to review the registeration.',
+            'Signup Successfully. Please Login to continue.',
             style: Theme.of(context).textTheme.headline6,
             textAlign: TextAlign.center,
           ),
@@ -793,6 +759,115 @@ class _AllSet extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SignInColumn extends StatelessWidget {
+  const _SignInColumn();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          PinRow(
+            onChanged: () {},
+            successCallback: (_) {},
+            setPin: (_) {},
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          RichText(
+            text: TextSpan(
+                text: 'This code will expire on ',
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.headline1!.color,
+                ),
+                children: [
+                  TextSpan(
+                    text: '5 minutes',
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  )
+                ]),
+          ),
+          SizedBox(
+            height: 24.h,
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+              minimumSize: MaterialStateProperty.all(
+                const Size(double.infinity, 0),
+              ),
+              padding: MaterialStateProperty.all(
+                EdgeInsets.symmetric(
+                  vertical: 20.h,
+                  horizontal: 16.w,
+                ),
+              ),
+            ),
+            onPressed: () {
+              context.read<DetailBloc>().add(const ToNextPage());
+              // Navigator.of(context).pushNamed(RouteGenerator.tab);
+            },
+            child: Text(
+              'verify code'.toUpperCase(),
+            ),
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(
+                Colors.grey,
+              ),
+              elevation: MaterialStateProperty.all(
+                0,
+              ),
+              minimumSize: MaterialStateProperty.all(
+                const Size(double.infinity, 0),
+              ),
+              padding: MaterialStateProperty.all(
+                EdgeInsets.symmetric(
+                  vertical: 20.h,
+                  horizontal: 16.w,
+                ),
+              ),
+            ),
+            onPressed: () {},
+            child: Text(
+              'resend code'.toUpperCase(),
+            ),
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          InkWell(
+            onTap: () {
+              context.read<DetailBloc>().add(const BackPreviousPage());
+            },
+            child: RichText(
+              text: TextSpan(
+                text: 'Want to Change the Phone no, ',
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.headline1!.color,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Go Back',
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  )
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 32.h,
+          ),
+        ],
+      ),
     );
   }
 }

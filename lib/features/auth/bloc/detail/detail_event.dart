@@ -10,15 +10,9 @@ abstract class DetailEvent extends Equatable {
 
 class SetBasicDetail extends DetailEvent {
   SetBasicDetail({
-    required String email,
-    required String password,
-    required String name,
     required String phoneNumber,
   }) : super(
           RegisterParam(
-            email: email,
-            password: password,
-            name: name,
             contactNumber: phoneNumber,
           ),
         );
