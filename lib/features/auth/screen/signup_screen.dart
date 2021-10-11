@@ -494,6 +494,7 @@ class _ProfilePicDetailState extends State<_ProfilePicDetail> {
             horizontal : 16.w,
             vertical: 12.h,
           ),
+          ///////////////////
           child: DropdownButton(
             isExpanded: true,
             iconEnabledColor: Colors.blue,
