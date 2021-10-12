@@ -1,6 +1,12 @@
+import 'dart:ui';
+import 'package:dawahazir_rider/features/home/widget/bottom_widget.dart';
+import 'package:dawahazir_rider/features/home/widget/text_widget.dart';
+import 'package:dawahazir_rider/features/home/widget/item_card.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/util/bloc/auth/auth_bloc.dart';
 import '../../../routes/routes.dart';
@@ -17,42 +23,74 @@ class HomeScreen extends StatelessWidget {
         }
       },
       child: Scaffold(
-        body: SafeArea(
-          child: SizedBox(
-            width: 1.sw,
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Home'),
-                    ElevatedButton(
-                      onPressed: () {
-                        // context
-                        //     .read<UserBloc>()
-                        //     .add(const LogoutWithFacebook());
-                      },
-                      child: Text('Logout with facebook'),
+        backgroundColor: const Color(0xFFF4F4F4),
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          leading: Image.asset('asset/icons/menu.png'),
+          title: textWidget('Alibay',20,FontWeight.w400,Colors.black),
+          actions: [
+            Image.asset('asset/icons/filter.png'),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 90,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        //context.read<UserBloc>().add(const LogoutWithGoogle());
-                      },
-                      child: Text('Logout with google'),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 15,right: 15,top: 115),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:  [
+                        textWidget('The type you inserted', 20, FontWeight.w400, Colors.black),
+                        const SizedBox(height: 15,),
+                        const BottomWidget(),
+                        const SizedBox(height: 15,),
+                        Container(
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            physics: NeverScrollableScrollPhysics(),
+                             shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index){
+                              return const ItemsCard();
+                            },
+                            itemCount: 7,
+                          ),
+                        ),
+                      ],
                     ),
-                    if (state is AuthLoaded)
-                      Column(
-                        children: [
-                          Text(state.auth.riderId.toString()),
-                        ],
-                      )
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 5,
+                left: 12,
+                right: 12,
+                child: Container(
+                  height: 175,
+                  decoration:  BoxDecoration(
+                    image: const DecorationImage(
+                        image: AssetImage('asset/images/1.jpeg'),
+                        fit: BoxFit.cover
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFF8F9BB3),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      ),
+      )
     );
   }
 }

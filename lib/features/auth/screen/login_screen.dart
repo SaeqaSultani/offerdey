@@ -1,3 +1,4 @@
+import 'package:dawahazir_rider/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
@@ -153,14 +154,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              context.read<AuthBloc>().add(
-                                    LoginWithEmail(
-                                      LoginParam(
-                                        email: emailController.text,
-                                        password: passwordController.text,
-                                      ),
-                                    ),
-                                  );
+
+                              Navigator.push(
+                                  context,MaterialPageRoute(builder: (context) => HomeScreen()
+                              ),);
+                              // context.read<AuthBloc>().add(
+                              //       LoginWithEmail(
+                              //         LoginParam(
+                              //           email: emailController.text,
+                              //           password: passwordController.text,
+                              //         ),
+                              //       ),
+                              //     );
                             },
                             child: const Text(
                               'Login',

@@ -42,6 +42,8 @@ flutter:
     - asset/images/auth/lottie_json/
     - asset/images/auth/svg/
     - asset/images/core/png/
+    - asset/images/
+    - asset/icons/
   # fonts:
   #   - family: Schyler
   #     fonts:
