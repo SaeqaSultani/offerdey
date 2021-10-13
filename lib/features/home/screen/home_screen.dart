@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:dawahazir_rider/features/home/screen/filter_screen.dart';
 import 'package:dawahazir_rider/features/home/widget/bottom_widget.dart';
 import 'package:dawahazir_rider/features/home/widget/text_widget.dart';
 import 'package:dawahazir_rider/features/home/widget/item_card.dart';
@@ -31,7 +32,29 @@ class HomeScreen extends StatelessWidget {
           leading: Image.asset('asset/icons/menu.png'),
           title: textWidget('Alibay',20,FontWeight.w400,Colors.black),
           actions: [
-            Image.asset('asset/icons/filter.png'),
+            InkWell(
+              onTap: (){
+              showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              clipBehavior: Clip.antiAlias,
+              //elevates modal bottom screen
+              elevation: 10,
+              // gives rounded corner to modal bottom screen
+              shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+              top: Radius.circular(30),
+                ),
+               ),
+              builder: (BuildContext context) {
+              return Container(
+                height: 400,
+                child: const FilterScreen(),
+                 );
+                },
+              );
+              },
+                child: Image.asset('asset/icons/filter.png')),
           ],
         ),
         body: SingleChildScrollView(
@@ -53,7 +76,7 @@ class HomeScreen extends StatelessWidget {
                       children:  [
                         textWidget('The type you inserted', 20, FontWeight.w400, Colors.black),
                         const SizedBox(height: 15,),
-                        const BottomWidget(),
+                         BottomWidget(0),
                         const SizedBox(height: 15,),
                         Container(
                           child: ListView.builder(

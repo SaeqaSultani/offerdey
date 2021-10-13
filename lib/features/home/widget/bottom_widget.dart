@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 
 
 class BottomWidget extends StatelessWidget {
-  const BottomWidget({
+  const BottomWidget(this.width,{
     Key? key,
   }) : super(key: key);
+
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(13)
+          borderRadius: BorderRadius.circular(13),
+           border: Border.all(color: Colors.black12,width: width)
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -20,7 +23,7 @@ class BottomWidget extends StatelessWidget {
         children: [
           Container(
               margin: EdgeInsets.all(5),
-              height:50,
+              height:48,
               width: 150,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -37,7 +40,7 @@ class BottomWidget extends StatelessWidget {
               child: Center(child: textWidget('Rant', 16, FontWeight.w400, Colors.grey))),
           Container(
               margin: EdgeInsets.all(5),
-              height:50,
+              height:48,
               width: 150,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
