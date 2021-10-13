@@ -18,8 +18,8 @@ class CategoriesCard extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                height: 70,
-                width: 70,
+                height: 65,
+                width: 65,
                 decoration: BoxDecoration(
                     image:  DecorationImage(
                         image: AssetImage(categories.image),
@@ -39,8 +39,8 @@ class CategoriesCard extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                height: 70,
-                width: 70,
+                height: 65,
+                width: 65,
                 decoration: BoxDecoration(
                     image:  DecorationImage(
                         image: AssetImage(categories.image),
