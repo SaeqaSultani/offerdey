@@ -1,3 +1,4 @@
+import 'package:dawahazir_rider/features/adding_list/screen/adding_list.dart';
 import 'package:dawahazir_rider/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -156,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
 
                               Navigator.push(
-                                  context,MaterialPageRoute(builder: (context) => HomeScreen()
+                                  context,MaterialPageRoute(builder: (context) => AddingList()
                               ),);
                               // context.read<AuthBloc>().add(
                               //       LoginWithEmail(
